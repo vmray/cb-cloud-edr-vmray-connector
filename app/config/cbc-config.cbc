@@ -1,0 +1,24 @@
+# CarbonBlack configuration profile
+# You can create new profiles with different configurations
+[default]
+
+# CarbonBlack URL
+url=https://defense.conferdeploy.net
+
+# CarbonBlack API Secret Key and API ID
+token=<API Secret Key>/<API ID>
+
+# CarbonBlack Organization Key
+org_key=<Organization Key>
+
+# SSL verification option for self-signed certificates
+# ssl_verify=false
+
+# Proxy address
+# proxy=proxy.example
+
+# Enable or disable system wide proxy
+# ignore_system_proxy=on
+
+# Custom user agent for CarbonBlack API requests
+integration_name=VMRayCarbonBlackConnector/1.0.0
