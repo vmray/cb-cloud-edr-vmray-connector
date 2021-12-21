@@ -23,7 +23,7 @@ def run():
     # Configure logging
     log.basicConfig(filename=GeneralConfig.LOG_FILE_PATH,
                     format='[%(asctime)s] <pid:%(process)d> %(levelname)s %(message)s', level=GeneralConfig.LOG_LEVEL)
-    log.info('[CONNECTOR.PY] Sarted VMRAY Analyzer & Detector Connector for VMware Carbon Black Cloud')
+    log.info('[CONNECTOR.PY] Started VMRAY Analyzer Connector for VMware Carbon Black Cloud')
 
     # Initializing and authenticating api instances
     cb = CarbonBlack(log)

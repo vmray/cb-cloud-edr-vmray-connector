@@ -53,7 +53,7 @@ class VMRay:
         """
         try:
             self.api = VMRayRESTAPI(self.config.URL, self.config.API_KEY, self.config.SSL_VERIFY)
-            self.log.debug("Successfully authenticated the VMRay %s API" % self.config.PRODUCT_TYPE)
+            self.log.debug("Successfully authenticated the VMRay %s API" % self.config.API_KEY_TYPE)
         except Exception as err:
             self.log.error(err)
             raise

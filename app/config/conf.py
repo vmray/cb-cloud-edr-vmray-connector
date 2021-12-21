@@ -20,10 +20,10 @@ class REPUTATION:
     TRUSTED_WHITE_LIST = "TRUSTED_WHITE_LIST"
 
 
-# VMRay product types enum
-class VMRayProductType:
-    ANALYZER = 0
-    DETECTOR = 1
+# VMRay API Key types enum
+class VMRAY_API_KEY_TYPE:
+    REPORT = 0
+    VERDICT = 1
 
 
 # VMRay verdicts enum
@@ -64,10 +64,10 @@ def build_exclusion_query(reputation_filters):
 
 # VMRay Configuration
 class VMRayConfig:
-    # VMRay Produty type setting
-    PRODUCT_TYPE = VMRayProductType.ANALYZER
+    # VMRay API Key type setting
+    API_KEY_TYPE = VMRAY_API_KEY_TYPE.REPORT
 
-    # VMRay Product Analyzer or Detector API KEY
+    # VMRay Report or Verdict API KEY
     API_KEY = "<API_KEY>"
 
     # VMRay REST API URL
