@@ -106,7 +106,7 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 
 | Configuration Item  | Description       | Default |
 |:--------------------|:-----------------------------------|:-------------|
-| `PRODUCT_TYPE`| Enum for VMRay Product Type [`ANALYZER`/`DETECTOR`] | `ANALYZER` |
+| `PRODUCT_TYPE`| Enum for VMRay API Key Type [`REPORT`/`VERDICT`] | `REPORT` |
 | `API_KEY`| API Key |  |
 | `URL`| URL of VMRay instance | `https://eu.cloud.vmray.com` |
 | `SSL_VERIFY`| Enable or disable certificate verification [`True`/`False`] | `True` |

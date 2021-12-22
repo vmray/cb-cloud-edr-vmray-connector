@@ -21,4 +21,4 @@ org_key=<Organization Key>
 # ignore_system_proxy=on
 
 # Custom user agent for CarbonBlack API requests
-integration_name=VMRayCarbonBlackConnector/1.0.0
+integration_name=VMRay/Analyzer-4.4.0/CarbonBlackCloudConnector-Contact:support@vmray.com
