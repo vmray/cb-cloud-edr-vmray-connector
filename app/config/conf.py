@@ -20,6 +20,13 @@ class REPUTATION:
     TRUSTED_WHITE_LIST = "TRUSTED_WHITE_LIST"
 
 
+# Carbon Black Cloud Device Operating System Identifiers
+class DEVICE_OS:
+    WINDOWS = "WINDOWS"
+    LINUX = "LINUX"
+    MAC = "MAC"
+
+
 # VMRay API Key types enum
 class VMRAY_API_KEY_TYPE:
     REPORT = 0
@@ -53,10 +60,17 @@ class RUNTIME_MODE:
     CLI = "CLI"
 
 
-# Build raw exlusion filters based on selected reputation filters
-def build_exclusion_query(reputation_filters):
+# Build raw exclusion filters based on selected reputation filters and device operating systems
+def build_exclusion_query(reputation_filters, device_os_filters):
+    filters = []
+
     if len(reputation_filters) > 0:
-        filters = ["!process_effective_reputation:%s" % reputation for reputation in reputation_filters]
+        filters.extend(["!process_effective_reputation:%s" % reputation for reputation in reputation_filters])
+
+    if len(device_os_filters) > 0:
+        filters.extend(["device_os:%s" % device_os for device_os in device_os_filters])
+
+    if len(filters) > 0:
         return " AND ".join(filters)
     else:
         return None
@@ -115,8 +129,13 @@ class CarbonBlackConfig:
                           REPUTATION.COMMON_WHITE_LIST,
                           REPUTATION.ADAPTIVE_WHITE_LIST]
 
-    # Carbon Black Cloud exclusion query based on reputation filters above
-    EXCLUSION_QUERY = build_exclusion_query(REPUTATION_FILTERS)
+    # Operating system filter
+    # Currently Carbon Black only collects PE files from endpoints
+    # Therefore, Connector is filtering only WINDOWS operating systems
+    DEVICE_OS_FILTERS = [DEVICE_OS.WINDOWS]
+
+    # Carbon Black Cloud exclusion query based on reputation and device_os filters above
+    EXCLUSION_QUERY = build_exclusion_query(REPUTATION_FILTERS, DEVICE_OS_FILTERS)
 
     # Download directory name
     DOWNLOAD_DIR = pathlib.Path("downloads")

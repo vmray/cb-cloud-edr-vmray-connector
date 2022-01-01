@@ -38,6 +38,12 @@ def run():
     # List of samples which need to be downloaded from CarbonBlack
     download_samples = []
 
+    # Retrieving processes from CarbonBlack
+    processes = cb.get_processes()
+
+    # Extracting sha256 hash values from processes
+    hash_list.update(cb.extract_hash_from_processes(processes))
+
     # Retrieving enriched events from CarbonBlack
     enriched_events = cb.get_enriched_events()
 

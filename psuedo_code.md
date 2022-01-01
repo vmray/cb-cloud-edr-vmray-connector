@@ -1,6 +1,6 @@
-1. Get all enriched events and alerts from Carbon Black with configured timespan and exclusion filters
-2. Extract unique SHA256 hashes of processes in enriched events
-3. Check if the hash values exists in the VMRay
+1. Get all processes, enriched events and alerts from Carbon Black with configured timespan and exclusion filters
+2. Extract unique SHA256 hashes of processes from processes, enriched events and alerts
+3. Check if the hash values exist in the VMRay
     1. If yes; add sample into found_samples with sample summary
     2. If no; add sample into download_samples
 4. Get all watchlists and feeds from Carbon Black
