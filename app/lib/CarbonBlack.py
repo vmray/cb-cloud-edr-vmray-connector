@@ -7,7 +7,7 @@ import hashlib
 from datetime import datetime, timedelta
 
 from cbc_sdk.rest_api import CBCloudAPI
-from cbc_sdk.platform import BaseAlert, ReputationOverride
+from cbc_sdk.platform import BaseAlert, ReputationOverride, Process
 from cbc_sdk.endpoint_standard import EnrichedEvent
 from cbc_sdk.enterprise_edr.ubs import Binary
 from cbc_sdk.enterprise_edr import Watchlist, Report, IOC_V2, Feed
@@ -59,6 +59,40 @@ class CarbonBlack:
         except Exception as err:
             self.log.error(err)
             raise
+
+    def get_processes(self):
+        """
+        Retrieve processes with configured timespan
+        :exception: when processes are not properly retrieved
+        :return processes: list of process objects
+        """
+        processes = []
+        start_time = (datetime.now() - timedelta(seconds=self.config.TIME_SPAN)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        # AsyncQueries doesn't support the set_create_time function
+        # Therefore, we need to use a raw query for filtering with the timespan
+        timespan_filter_query = "(process_start_time:[%s TO %s])" % (start_time, end_time)
+
+        if self.config.EXCLUSION_QUERY is not None:
+            filter_query = self.config.EXCLUSION_QUERY
+            filter_query += " AND " + timespan_filter_query
+
+            # With the set_fields function, only necessary attributes are retrieved from Carbon Black.
+            query = self.api.select(Process). \
+                where(filter_query). \
+                set_fields(["process_hash", "process_guid"])
+        else:
+            query = self.api.select(Process). \
+                where(timespan_filter_query). \
+                set_fields(["process_hash", "process_guid"])
+
+        try:
+            processes = list(query)
+            self.log.info("Successfully retrieved %d processes" % len(processes))
+        except Exception as err:
+            self.log.error(err)
+        return processes
 
     def get_alerts(self):
         """
@@ -182,6 +216,26 @@ class CarbonBlack:
         self.log.info("Successfully downloaded %d binaries from Unified Binary Store" % len(files))
         return files
 
+    def extract_hash_from_processes(self, processes):
+        """
+        Extract SHA256 hash of process binaries from given process objects
+        :param processes: list of processes
+        :return: hashes: list of SHA256 hashes
+        """
+        hashes = set()
+        for process in processes:
+            try:
+                # process_hash is list object which contains MD5 and SHA256 hash values
+                for hash_value in process.process_hash:
+                    # Filtering only SHA256 hash values with length check
+                    if hash_value is not None and len(hash_value) == 64:
+                        hashes.add(hash_value)
+            except Exception:
+                # Some process object doesn't contain process_hash attribute, we need to skip them.
+                pass
+        self.log.info("%d unique SHA256 hash retrieved from %d processes" % (len(hashes), len(processes)))
+        return hashes
+
     def extract_hash_from_alerts(self, alerts):
         """
         Extract SHA256 hash of process binaries from given alerts
@@ -260,9 +314,10 @@ class CarbonBlack:
                             if ioc_v2["match_type"] == "equality":
                                 iocs.extend(ioc_v2["values"])
                     except Exception as err:
-                        self.log.error("Watchlist (%s) report IOC error: %s" % (watchlist.original_document["name"],str(err)))
+                        self.log.error(
+                            "Watchlist (%s) report IOC error: %s" % (watchlist.original_document["name"], str(err)))
             except Exception as err:
-                self.log.error("Watchlist (%s) report error: %s" % (watchlist.original_document["name"],str(err)))
+                self.log.error("Watchlist (%s) report error: %s" % (watchlist.original_document["name"], str(err)))
 
         for feed in feeds:
             try:
@@ -272,9 +327,9 @@ class CarbonBlack:
                             if ioc_v2["match_type"] == "equality":
                                 iocs.extend(ioc_v2["values"])
                     except Exception as err:
-                        self.log.error("Feed (%s) report IOC error: %s" % (feed.original_document["name"],str(err)))
+                        self.log.error("Feed (%s) report IOC error: %s" % (feed.original_document["name"], str(err)))
             except Exception as err:
-                self.log.error("Feed (%s) report error: %s" % (feed.original_document["name"],str(err)))
+                self.log.error("Feed (%s) report error: %s" % (feed.original_document["name"], str(err)))
 
         self.log.info("%d IOC value found in watchlists and feeds." % len(iocs))
         return iocs

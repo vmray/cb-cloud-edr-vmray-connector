@@ -89,6 +89,7 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 | `PATH`             | Configuration file path    | `./config/cbc-config.cbc` |
 | `TIME_SPAN`        | Polling time span for alerts/events as seconds  | `18000` |
 | `REPUTATION_FILTERS` | Reputation filters to exclude alerts and events based on whitelists  | `TRUSTED_WHITE_LIST, LOCAL_WHITE, COMPANY_WHITE_LIST, COMMON_WHITE_LIST, ADAPTIVE_WHITE_LIST` |
+| `DEVICE_OS_FILTERS` | Device operating system filter to include selected operating systems | `WINDOWS`|
 | `DOWNLOAD_DIR_NAME`      | Directory for downloaded archives | `temp` |
 | `EXTRACT_DIR_NAME`     | Directory for extracted binaries  | `downloads` |
 | `MAX_ENRICHED_EVENT_COUNT` | Max retrieved enriched event count per request | `10000` |
