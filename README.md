@@ -63,6 +63,8 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 | Applications    | Reputation | org.reputations |:ballot_box_with_check:| |:ballot_box_with_check:| | |
 | Custom Detections    | Watchlists | org.watchlists|:ballot_box_with_check:| :ballot_box_with_check: |:ballot_box_with_check:| | |
 | Custom Detections    | Feeds   | org.feeds | |:ballot_box_with_check:| | | |
+| Device | Quarantine | device.quarantine | | | | | :ballot_box_with_check: |
+| Device | General information | device | | :ballot_box_with_check:  | | | |
 | Search               | Events | org.search.events | :ballot_box_with_check: | :ballot_box_with_check: | | | |
 | Unified Binary Store | SHA-256 | ubs.org.sha256 | | :ballot_box_with_check: | | | |
 | Unified Binary Store | File | ubs.org.file | |:ballot_box_with_check:| | | |
@@ -98,6 +100,8 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 | `AUTO_BAN` | Ban process with SHA256 hash values [`True`/`False`] | `False` |
 | `AUTO_BAN_VERDICTS` | Selected verdicts to ban processes automatically | `[malicious]` |
 | `AUTO_BAN_DESCRIPTION` | Description for banned processes | `Detected as malicious by VMRay` |
+| `QUARANTINE` | Quarantine devices which contains malicious process | `False` |
+| `QUARANTINE_VERDICTS` | Selected verdicts to quarantine devices automatically | `[malicious]` |
 
 ## VMRay Configurations
 

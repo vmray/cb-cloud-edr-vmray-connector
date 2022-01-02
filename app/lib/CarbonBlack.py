@@ -7,7 +7,7 @@ import hashlib
 from datetime import datetime, timedelta
 
 from cbc_sdk.rest_api import CBCloudAPI
-from cbc_sdk.platform import BaseAlert, ReputationOverride, Process
+from cbc_sdk.platform import BaseAlert, ReputationOverride, Process, Device
 from cbc_sdk.endpoint_standard import EnrichedEvent
 from cbc_sdk.enterprise_edr.ubs import Binary
 from cbc_sdk.enterprise_edr import Watchlist, Report, IOC_V2, Feed
@@ -459,3 +459,52 @@ class CarbonBlack:
             self.log.info("Sample %s added into BLACK_LIST" % sha256)
         except Exception as err:
             self.log.error(err)
+
+    def get_device_ids(self, hash_value):
+        """
+        Retrieve device id list with malicious hash value
+        :exception: when device ids are not properly retrieved
+        :return device_ids: set of device ids
+        """
+        device_ids = set()
+
+        start_time = (datetime.now() - timedelta(seconds=self.config.TIME_SPAN)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        # AsyncQueries doesn't support the set_create_time function
+        # Therefore, we need to use a raw query for filtering with the timespan
+        timespan_filter_query = "(process_start_time:[%s TO %s])" % (start_time, end_time)
+
+        hash_filter_query = "(process_sha256:%s)" % hash_value
+
+        filter_query = timespan_filter_query + " AND " + hash_filter_query
+
+        # With the set_fields function, only necessary attributes are retrieved from Carbon Black.
+        query = self.api.select(Process). \
+            where(filter_query). \
+            set_fields(["process_hash", "process_guid", "device_id"])
+
+        try:
+            processes = list(query)
+            self.log.info("Successfully retrieved %d processes" % len(processes))
+            for process in processes:
+                device_ids.add(process.device_id)
+            self.log.info("Successfully retrieved %d device ids" % len(device_ids))
+        except Exception as err:
+            self.log.error(err)
+
+        return device_ids
+
+    def quarantine_devices(self, device_ids):
+        """
+        Quarantine devices with the given device_ids list
+        :exception: when device ids are not properly quarantined
+        :return: void
+        """
+        for device_id in device_ids:
+            try:
+                device = self.api.select(Device, device_id)
+                device.quarantine(True)
+                self.log.info("Device %s quarantined." % device_id)
+            except Exception as err:
+                self.log.error(err)
