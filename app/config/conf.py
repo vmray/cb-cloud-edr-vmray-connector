@@ -161,6 +161,12 @@ class CarbonBlackConfig:
     # Description for banned processes
     AUTO_BAN_DESCRIPTION = "Detected as malicious by VMRay"
 
+    # Quarantine devices which contains malicious process
+    QUARANTINE = False
+
+    # Selected verdicts to quarantine devices automatically
+    QUARANTINE_VERDICTS = [VERDICT.MALICIOUS]
+
 
 # General Configuration
 class GeneralConfig:

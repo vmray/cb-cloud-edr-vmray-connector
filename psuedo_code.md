@@ -44,4 +44,8 @@
                 4. If auto_ban is configured, check sample verdict
                     1. If sample verdict in the auto_ban_verdicts
                         1. Ban SHA256 hash value in Carbon Black with reputation override
+                5. If quarantine is configured, check sample verdict
+                    1. If sample verdict in the quarantine_verdicts
+                        1. Get device ids with sample sha256 hash value
+                        2. Quarantine devices with device_ids
 15. Delete downloaded files

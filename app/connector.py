@@ -165,6 +165,12 @@ def run():
                         if sample_data["sample_verdict"] in cb.config.AUTO_BAN_VERDICTS:
                             cb.auto_ban_sample(submission["sha256"])
 
+                    # Quarantine devices which running malicious process
+                    if cb.config.QUARANTINE:
+                        if sample_data["sample_verdict"] in cb.config.QUARANTINE_VERDICTS:
+                            device_ids = cb.get_device_ids(submission["sha256"])
+                            cb.quarantine_devices(device_ids)
+
     # Removing downloaded files
     for file in files:
         os.remove(file["path"])
