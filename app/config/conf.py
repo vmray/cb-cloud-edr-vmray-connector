@@ -87,6 +87,10 @@ class VMRayConfig:
     # VMRay REST API URL
     URL = "https://eu.cloud.vmray.com"
 
+    # User Agent string for VMRay Api requests
+    # Defined for further use
+    USER_AGENT = "VMRayAnalyzer/CarbonBlackCloudConnector-1.0"
+
     # SSL Verification setting for self-signed certificates
     SSL_VERIFY = True
 
