@@ -1,6 +1,6 @@
 # VMWare Carbon Black Cloud Connector for VMRay Analyzer 
 
-**Latest Version:** 1.0 - **Release Date:** 09/13/2021
+**Latest Version:** 1.1 - **Release Date:** 03/20/2022
 
 ## Overview
 
@@ -41,7 +41,7 @@ This project is an integration between VMWare Carbon Black Cloud Enterprise EDR 
 
 Clone the repository into a local folder.
 
-    git clone https://github.com/vmray/vmray-cbc-connector.git
+    git clone https://github.com/vmray/cb-cloud-edr-vmray-connector.git
 
 Install the requirements.
 

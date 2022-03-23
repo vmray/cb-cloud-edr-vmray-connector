@@ -140,7 +140,7 @@ class CarbonBlack:
             enriched_events = list(query)
             self.log.info("Successfully retrieved %d enriched events" % len(enriched_events))
         except Exception as err:
-            self.log.error(err)
+            self.log.warning(err)
         return enriched_events
 
     def get_ubs_binaries(self, download_samples):
@@ -158,9 +158,9 @@ class CarbonBlack:
                 if download_url is not None:
                     binaries.append({"url": download_url, "sha256": sample["sha256"]})
                 else:
-                    self.log.error("Failed to create download url for %s" % sample["sha256"])
+                    self.log.warning("Failed to create download url for %s" % sample["sha256"])
             except Exception as err:
-                self.log.error("%s - %s" % (str(err), sample["sha256"]))
+                self.log.warning("UBS did not store the binary. %s - %s" % (str(err), sample["sha256"]))
         self.log.info("Successfully retrieved %d binary from Unified Binary Store" % len(binaries))
         return binaries
 
