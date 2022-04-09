@@ -183,8 +183,8 @@ class GeneralConfig:
     # Log verbosity level
     LOG_LEVEL = log.INFO
 
-    # Selected verdicts for processing
-    SELECTED_VERDICTS = [VERDICT.SUSPICIOUS, VERDICT.MALICIOUS]
+    # Selected verdicts to process and report back to VMWare Carbon Black Cloud
+    SELECTED_VERDICTS = [VERDICT.MALICIOUS]
 
     # Time span between script iterations
     TIME_SPAN = 300

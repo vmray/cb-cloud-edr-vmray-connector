@@ -131,7 +131,7 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 |:--------------------|:-----------------------------------|:-------------|
 | `LOG_FILE_PATH`| Connector log file path | `cbc-connector.log` |
 | `LOG LEVEL`| Logging verbosity level | `INFO` |
-| `SELECTED_VERDICTS`| Selected verdicts to analyze | `suspicious,malicious` |
+| `SELECTED_VERDICTS`| Selected verdicts to process and report back to VMWare Carbon Black Cloud | `malicious` |
 | `TIME_SPAN`| Time span between script iterations as seconds | `300` |
 | `RUNTIME_MODE`| Runtime mode for script | `DOCKER` |
 
