@@ -386,12 +386,17 @@ class CarbonBlack:
         description = sample_data["sample_webif_url"]
 
         severity = 0
-        if sample_data["sample_vti_score"].isnumeric():
-            severity = math.floor(int(sample_data["sample_vti_score"]) / 10)
-        elif sample_data["sample_vti_score"] == VERDICT.SUSPICIOUS:
-            severity = 5
-        elif sample_data["sample_vti_score"] == VERDICT.MALICIOUS:
-            severity = 10
+
+        ## Check added to handle new integer and float values
+        if type(sample_data["sample_vti_score"]) is int or type(sample_data["sample_vti_score"]) is float:
+            severity = math.floor(sample_data["sample_vti_score"] / 10)
+        else:
+            if sample_data["sample_vti_score"].isnumeric():
+                severity = math.floor(int(sample_data["sample_vti_score"]) / 10)
+            elif sample_data["sample_vti_score"] == VERDICT.SUSPICIOUS:
+                severity = 5
+            elif sample_data["sample_vti_score"] == VERDICT.MALICIOUS:
+                severity = 10
 
         tags = []
         tags.extend(sample_data["sample_classifications"])
