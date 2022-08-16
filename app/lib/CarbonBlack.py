@@ -398,6 +398,10 @@ class CarbonBlack:
             elif sample_data["sample_vti_score"] == VERDICT.MALICIOUS:
                 severity = 10
 
+        # Added zero check, because CB API does not allow zero severity
+        if severity == 0:
+            severity = 1
+
         tags = []
         tags.extend(sample_data["sample_classifications"])
         tags.extend(sample_data["sample_threat_names"])
