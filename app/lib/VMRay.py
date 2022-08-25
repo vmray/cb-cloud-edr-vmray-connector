@@ -354,6 +354,8 @@ class VMRay:
                 try:
                     if file["is_truncated"]:
                         params["analyzer_mode"] = self.config.TRUNCATED_FILE_ANALYZER_MODE
+                    else:
+                        params["analyzer_mode"] = self.config.DEFAULT_ANALYZER_MODE
 
                     with io.open(file["path"], "rb") as file_object:
                         params["sample_file"] = file_object
