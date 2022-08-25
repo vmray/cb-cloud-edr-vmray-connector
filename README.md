@@ -120,7 +120,7 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 | `ANALYSIS_TIMEOUT`| Timeout for submission analyses as seconds | `120` |
 | `MAX_JOBS`| Max job count for submissions | `3` |
 | `MAX_RECURSIVE_SAMPLES`| Max count of recursive samples to analyze | `5` |
-| `NORMAL_ANALYZER_MODE`| Analyzer mode for normal samples | `reputation_static_dynamic` |
+| `DEFAULT_ANALYZER_MODE`| Analyzer mode for normal samples | `reputation_static_dynamic` |
 | `TRUNCATED_FILE_ANALYZER_MODE`| Analyzer mode for truncated samples | `reputation_static` |
 
 ## General Connector Configurations

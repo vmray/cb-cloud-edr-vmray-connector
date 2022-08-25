@@ -106,6 +106,9 @@ class VMRayConfig:
     # VMRay analysis job timeout for wait_submissions
     ANALYSIS_JOB_TIMEOUT = 300
 
+    # Analyzer mode for normal samples
+    DEFAULT_ANALYZER_MODE = ANALYZER_MODE.REPUTATION_STATIC_DYNAMIC
+
     # Analyzer mode for truncated samples
     # Carbon Black truncates files bigger than 25MB
     # If you want to run dinamic analysis for these samples change value accordingly

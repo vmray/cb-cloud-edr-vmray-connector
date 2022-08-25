@@ -34,6 +34,8 @@ class VMRay:
         :raise: When healtcheck error occured during the connection wih REST API
         :return: boolean status of VMRay REST API
         """
+        self.log.debug("healthcheck function is invoked")
+
         method = "GET"
         url = "/rest/system_info"
 
@@ -51,6 +53,8 @@ class VMRay:
         :raise: When API Key is not properly configured
         :return: void
         """
+        self.log.debug("authenticate function is invoked")
+
         try:
             self.api = VMRayRESTAPI(self.config.URL, self.config.API_KEY, self.config.SSL_VERIFY)
             self.log.debug("Successfully authenticated the VMRay %s API" % self.config.API_KEY_TYPE)
@@ -65,6 +69,8 @@ class VMRay:
         :param sample_id: boolean value to determine which value (sample_id or sha256) is passed to function
         :return: dict object which contains summary data about sample
         """
+        self.log.debug("get_sample function is invoked")
+
         method = "GET"
         if sample_id:
             url = "/rest/sample/" + str(identifier)
@@ -89,6 +95,8 @@ class VMRay:
         :param sample_data: dict object which contains summary data about the sample
         :return iocs: dict object which contains IOC values according to the verdict
         """
+        self.log.debug("get_sample_iocs function is invoked")
+
         sample_id = sample_data["sample_id"]
 
         method = "GET"
@@ -111,6 +119,8 @@ class VMRay:
         :param sample_id: id value of the sample
         :return: dict object which contains VTI information about the sample
         """
+        self.log.debug("get_sample_vtis function is invoked")
+
         method = "GET"
         url = "/rest/sample/%s/vtis" % str(sample_id)
 
@@ -128,6 +138,8 @@ class VMRay:
         :param submission_id: id value of the submission
         :return: dict object which contains analysis information about the submission
         """
+        self.log.debug("get_submission_analyses function is invoked")
+
         method = "GET"
         url = "/rest/analysis/submission/%s" % str(submission_id)
         try:
@@ -144,6 +156,8 @@ class VMRay:
         :param sample: dict object which contains raw data about the sample
         :return sample_data: dict objects which contains parsed data about the sample
         """
+        self.log.debug("parse_sample_data function is invoked")
+
         sample_data = {}
         keys = [
             "sample_id",
@@ -172,6 +186,8 @@ class VMRay:
         :param vtis: dict object which contains raw VTI data about the sample
         :return parsed_vtis: dict object which contains parsed VTI data about the sample
         """
+        self.log.debug("parse_sample_vtis function is invoked")
+
         parsed_vtis = []
 
         if vtis is not None:
@@ -187,6 +203,8 @@ class VMRay:
         :param iocs: dict object which contains raw IOC data about the sample
         :return ioc_data: dict object which contains parsed/extracted process, file and network IOC values
         """
+        self.log.debug("parse_sample_iocs function is invoked")
+
         ioc_data = {}
 
         process_iocs = self.parse_process_iocs(iocs)
@@ -214,6 +232,8 @@ class VMRay:
         :param iocs: dict object which contains raw IOC data about the sample
         :return process_iocs: dict object which contains image_names and cmd_line parameters as IOC values
         """
+        self.log.debug("parse_process_iocs function is invoked")
+
         process_iocs = {}
         cmd_lines = set()
         image_names = set()
@@ -236,6 +256,8 @@ class VMRay:
         :param iocs: dict object which contains raw IOC data about the sample
         :return file_iocs: dict object which contains sha256 hashes and file_names as IOC values
         """
+        self.log.debug("parse_file_iocs function is invoked")
+
         file_iocs = {}
         sha256 = set()
         filenames = set()
@@ -255,6 +277,13 @@ class VMRay:
         return file_iocs
 
     def parse_registry_iocs(self, iocs):
+        """
+        Parse and extract Registry IOC value (reg_key_name) from the raw IOC dict
+        :param iocs: dict object which contains raw IOC data about the sample
+        :return registry_iocs: dict object which contains reg_keys as IOC values
+        """
+        self.log.debug("parse_registry_iocs function is invoked")
+
         registry_iocs = {}
         registry_keys = set()
 
@@ -275,6 +304,8 @@ class VMRay:
         :param iocs: dict object which contains raw IOC data about the sample
         :return network_iocs: dict object which contains domains and IPV4 addresses as IOC values
         """
+        self.log.debug("parse_network_iocs function is invoked")
+
         network_iocs = {}
         domains = set()
         ip_addresses = set()
@@ -306,6 +337,8 @@ class VMRay:
         :param files: list of file paths which downloaded from CarbonBlack UBS
         :return submissions: dict object which contains submission_id and sample_id
         """
+        self.log.debug("submit_samples function is invoked")
+
         method = "POST"
         url = "/rest/sample/submit"
 
@@ -321,6 +354,8 @@ class VMRay:
                 try:
                     if file["is_truncated"]:
                         params["analyzer_mode"] = self.config.TRUNCATED_FILE_ANALYZER_MODE
+                    else:
+                        params["analyzer_mode"] = self.config.DEFAULT_ANALYZER_MODE
 
                     with io.open(file["path"], "rb") as file_object:
                         params["sample_file"] = file_object
@@ -350,6 +385,7 @@ class VMRay:
         :param submissions: list of submission dictionaries
         :return custom_dict : contains submission status, submission info and API response
         """
+        self.log.debug("wait_submissions function is invoked")
 
         method = "GET"
         url = "/rest/submission/%s"
@@ -409,6 +445,7 @@ class VMRay:
         :param submission_id: id value of submission
         :return status: boolean value of status
         """
+        self.log.debug("is_submission_started function is invoked")
 
         method = "GET"
         url = "/rest/job/submission/%d"
@@ -432,6 +469,8 @@ class VMRay:
         :param submissions: list of submission_id's
         :return: void
         """
+        self.log.debug("check_submission_error function is invoked")
+
         analyses = self.get_submission_analyses(submission["submission_id"])
         if analyses is not None:
             for analysis in analyses:

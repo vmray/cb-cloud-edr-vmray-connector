@@ -53,6 +53,8 @@ class CarbonBlack:
         :raise: CredentialError when credentials are not properly configured
         :return: void
         """
+        self.log.debug("authenticate function is invoked")
+
         try:
             self.api = CBCloudAPI(credential_file=self.config.CONFIG_FILE_PATH, profile=self.config.PROFILE)
             self.log.debug("Successfully authenticated the CBC API with %s" % self.config.CONFIG_FILE_PATH)
@@ -66,6 +68,8 @@ class CarbonBlack:
         :exception: when processes are not properly retrieved
         :return processes: list of process objects
         """
+        self.log.debug("get_processes function is invoked")
+
         processes = []
         start_time = (datetime.now() - timedelta(seconds=self.config.TIME_SPAN)).strftime('%Y-%m-%dT%H:%M:%SZ')
         end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -100,6 +104,8 @@ class CarbonBlack:
         :exception: when alerts are not properly retrieved
         :return alerts: list of alerts
         """
+        self.log.debug("get_alerts function is invoked")
+
         alerts = []
         start_time = (datetime.now() - timedelta(seconds=self.config.TIME_SPAN)).strftime('%Y-%m-%dT%H:%M:%SZ')
         end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -123,6 +129,8 @@ class CarbonBlack:
         :exception: when enriched events are not properly retrieved
         :return enriched_events: list of enriched events
         """
+        self.log.debug("get_enriched_events function is invoked")
+
         enriched_events = []
         start_time = (datetime.now() - timedelta(seconds=self.config.TIME_SPAN)).strftime('%Y-%m-%dT%H:%M:%SZ')
         end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -150,6 +158,8 @@ class CarbonBlack:
         :param download_samples: list of samples which found in enriched events and alerts
         :return binaries: list of binary dicts (contains binary download url and hash value)
         """
+        self.log.debug("get_ubs_binaries function is invoked")
+
         binaries = []
         for sample in download_samples:
             try:
@@ -170,6 +180,8 @@ class CarbonBlack:
         :param binary_list: list of binary dicts (contains binary download url and hash value)
         :return files: list of file paths for successfully downloaded binaries
         """
+        self.log.debug("download_ubs_binaries function is invoked")
+
         files = []
         for binary in binary_list:
             try:
@@ -222,6 +234,8 @@ class CarbonBlack:
         :param processes: list of processes
         :return: hashes: list of SHA256 hashes
         """
+        self.log.debug("extract_hash_from_processes function is invoked")
+
         hashes = set()
         for process in processes:
             try:
@@ -242,6 +256,8 @@ class CarbonBlack:
         :param alerts: list of alerts
         :return hashes: list of SHA256 hashes
         """
+        self.log.debug("extract_hash_from_alerts function is invoked")
+
         hashes = set()
         for alert in alerts:
             if hasattr(alert, "original_document"):
@@ -259,6 +275,8 @@ class CarbonBlack:
         :param enriched_events: list of enriched events
         :return: hashes: list of SHA256 hashes
         """
+        self.log.debug("extract_hash_from_enriched_events function is invoked")
+
         hashes = set()
         for event in enriched_events:
             if hasattr(event, "process_sha256"):
@@ -273,6 +291,8 @@ class CarbonBlack:
         :exception when watchlist objects are not properly retrieved
         :return watchlists: list of watchlist objects
         """
+        self.log.debug("get_watchlists function is invoked")
+
         watchlists = []
         query = self.api.select(Watchlist)
         try:
@@ -288,6 +308,8 @@ class CarbonBlack:
         :exception when feed objects are not properly retrieved
         :return feeds: list of feed objects
         """
+        self.log.debug("get_feeds function is invoked")
+
         feeds = []
         query = self.api.select(Feed)
         try:
@@ -304,6 +326,8 @@ class CarbonBlack:
         :param feeds: list of feed objects
         :return iocs: list of IOC values like IP, Domain, SHA256 etc
         """
+        self.log.debug("get_iocs function is invoked")
+
         iocs = []
 
         for watchlist in watchlists:
@@ -339,6 +363,8 @@ class CarbonBlack:
         Retrieve all watchlists and filter connector watchlist by name
         :return watchlist: watchlist object for connector if found
         """
+        self.log.debug("get_watchlist function is invoked")
+
         watchlists = []
         query = self.api.select(Watchlist)
 
@@ -362,6 +388,8 @@ class CarbonBlack:
         Create watchlist for connector if not already created
         :return: watchlist object for connector
         """
+        self.log.debug("create_watchlist function is invoked")
+
         try:
             builder = Watchlist.create(self.api, self.config.WATCHLIST_NAME)
             builder.set_description(self.config.WATCHLIST_DESCRIPTION)
@@ -382,6 +410,8 @@ class CarbonBlack:
         :param sample_vtis: list of dict objects which contains summary data about VTI's
         :return: void
         """
+        self.log.debug("create_report function is invoked")
+
         title = "[%s] VMRAY Report for %s" % (sample_data["sample_verdict"].upper(), sample_data["sample_sha256hash"])
         description = sample_data["sample_webif_url"]
 
@@ -425,6 +455,8 @@ class CarbonBlack:
         :param old_iocs: list of IOC values which extracted from CarbonBlack for checking duplicate IOC values
         :return ioc_objects: list of IOCV2 objects
         """
+        self.log.debug("create_iocv2_objects function is invoked")
+
         ioc_objects = []
         for key in ioc_data:
             if key in IOC_FIELD_MAPPINGS.keys():
@@ -457,6 +489,8 @@ class CarbonBlack:
         :param sha256: Hash value of sample
         :return: void
         """
+        self.log.debug("auto_ban_sample function is invoked")
+
         reputation_override_object = {
             "description": self.config.AUTO_BAN_DESCRIPTION,
             "override_list": "BLACK_LIST",
@@ -475,6 +509,8 @@ class CarbonBlack:
         :exception: when device ids are not properly retrieved
         :return device_ids: set of device ids
         """
+        self.log.debug("get_device_ids function is invoked")
+
         device_ids = set()
 
         start_time = (datetime.now() - timedelta(seconds=self.config.TIME_SPAN)).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -510,6 +546,8 @@ class CarbonBlack:
         :exception: when device ids are not properly quarantined
         :return: void
         """
+        self.log.debug("quarantine_devices function is invoked")
+
         for device_id in device_ids:
             try:
                 device = self.api.select(Device, device_id)
