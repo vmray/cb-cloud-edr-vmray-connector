@@ -412,13 +412,16 @@ class CarbonBlack:
         """
         self.log.debug("create_report function is invoked")
 
-        title = "[%s] VMRAY Report for %s" % (sample_data["sample_verdict"].upper(), sample_data["sample_sha256hash"])
+        title = "[%s] VMRAY Report for %s" % (sample_data["sample_verdict"], sample_data["sample_sha256hash"])
         description = sample_data["sample_webif_url"]
 
         severity = 0
 
+        ## Check added to handle null values
+        if sample_data["sample_vti_score"] is None:
+            severity = 1
         ## Check added to handle new integer and float values
-        if type(sample_data["sample_vti_score"]) is int or type(sample_data["sample_vti_score"]) is float:
+        elif type(sample_data["sample_vti_score"]) is int or type(sample_data["sample_vti_score"]) is float:
             severity = math.floor(sample_data["sample_vti_score"] / 10)
         else:
             if sample_data["sample_vti_score"].isnumeric():
