@@ -102,6 +102,7 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 | `AUTO_BAN_DESCRIPTION` | Description for banned processes | `Detected as malicious by VMRay` |
 | `QUARANTINE` | Quarantine devices which contains malicious process | `False` |
 | `QUARANTINE_VERDICTS` | Selected verdicts to quarantine devices automatically | `[malicious]` |
+| `SELECTED_DATA_SOURCES` | Selected data sources to retrieve evidence hashes | `[PROCESS, ENRICHED_EVENTS, ALERTS]` |
 
 ## VMRay Configurations
 
@@ -122,6 +123,8 @@ Edit the [cbc-config.cbc](app/config/cbc-config.cbc) and [conf.py](app/config/co
 | `MAX_RECURSIVE_SAMPLES`| Max count of recursive samples to analyze | `5` |
 | `DEFAULT_ANALYZER_MODE`| Analyzer mode for normal samples | `reputation_static_dynamic` |
 | `TRUNCATED_FILE_ANALYZER_MODE`| Analyzer mode for truncated samples | `reputation_static` |
+| `RESUBMIT`| Resubmission status which has been already analyzed by VMRay [`True`/`False`] | `False` |
+| `RESUBMISSION_VERDICTS`| Selected verdicts to resubmit evidences | `[malicious, suspicious]` |
 
 ## General Connector Configurations
 

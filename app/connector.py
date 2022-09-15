@@ -7,7 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.par
 
 from app.lib.CarbonBlack import CarbonBlack
 from app.lib.VMRay import VMRay
-from app.config.conf import CarbonBlackConfig, GeneralConfig, RUNTIME_MODE
+from app.config.conf import CarbonBlackConfig, VMRayConfig, GeneralConfig, RUNTIME_MODE, DATA_SOURCE
 
 
 def run():
@@ -39,34 +39,69 @@ def run():
     # List of samples which need to be downloaded from CarbonBlack
     download_samples = []
 
-    # Retrieving processes from CarbonBlack
-    processes = cb.get_processes()
+    # List of samples which found on VMRay database but will be resubmitted
+    resubmit_samples = []
 
-    # Extracting sha256 hash values from processes
-    hash_list.update(cb.extract_hash_from_processes(processes))
+    if DATA_SOURCE.PROCESS in CarbonBlackConfig.SELECTED_DATA_SOURCES:
+        # Retrieving processes from CarbonBlack
+        processes = cb.get_processes()
 
-    # Retrieving enriched events from CarbonBlack
-    enriched_events = cb.get_enriched_events()
+        # Extracting sha256 hash values from processes
+        hash_list.update(cb.extract_hash_from_processes(processes))
 
-    # Extracting sha256 hash values from enriched events
-    hash_list.update(cb.extract_hash_from_enriched_events(enriched_events))
+    if DATA_SOURCE.ENRICHED_EVENTS in CarbonBlackConfig.SELECTED_DATA_SOURCES:
+        # Retrieving enriched events from CarbonBlack
+        enriched_events = cb.get_enriched_events()
 
-    # Retrieving alerts from CarbonBlack
-    alerts = cb.get_alerts()
+        # Extracting sha256 hash values from enriched events
+        hash_list.update(cb.extract_hash_from_enriched_events(enriched_events))
 
-    # Extracting sha256 hash values from alerts
-    hash_list.update(cb.extract_hash_from_alerts(alerts))
+    if DATA_SOURCE.ALERTS in CarbonBlackConfig.SELECTED_DATA_SOURCES:
+        # Retrieving alerts from CarbonBlack
+        alerts = cb.get_alerts()
 
-    # Checking hash values in VMRay database, if sample found on VMRay no need to submit again
+        # Extracting sha256 hash values from alerts
+        hash_list.update(cb.extract_hash_from_alerts(alerts))
+
+    # Checking found hashes on Carbon Black, if no hash has been found no need to proceed
+    if len(hash_list) == 0:
+        if len(CarbonBlackConfig.SELECTED_DATA_SOURCES) > 0:
+            log.warning("No evidence hash was found on Carbon Black. Selected data sources: %s" % ",".join(
+                CarbonBlackConfig.SELECTED_DATA_SOURCES))
+        else:
+            log.warning("No data source was selected and no evidence hash was found on Carbon Black")
+        return
+
+    # Checking hash values in VMRay database
     for sha256 in hash_list:
         sample = vmray.get_sample(sha256)
         if sample is not None:
-            found_samples.append({"sha256": sha256, "is_truncated": False, "sample": sample})
+            # If resubmission is active and sample verdicts in configured resubmission verdicts
+            # Hash added into resubmit samples and re-analyzed
+            sample_metadata = vmray.parse_sample_data(sample)
+
+            if VMRayConfig.RESUBMIT and sample_metadata["sample_verdict"] in VMRayConfig.RESUBMISSION_VERDICTS:
+                log.debug(
+                    "File %s found in VMRay database, but will be resubmitted." % sha256)
+                resubmit_samples.append({"sha256": sha256, "is_truncated": False, "sample": sample})
+            else:
+                log.debug(
+                    "File %s found in VMRay database. No need to submit again." % sha256)
+                found_samples.append({"sha256": sha256, "is_truncated": False, "sample": sample})
         else:
             download_samples.append({"sha256": sha256, "is_truncated": False, "sample": sample})
 
-    log.info("%d samples found on VMRay database" % len(found_samples))
-    log.info("%d samples need to be downloaded and submitted" % len(download_samples))
+    if len(found_samples) > 0:
+        log.info("%d samples found on VMRay database" % len(found_samples))
+
+    if len(resubmit_samples) > 0:
+        log.info("%d samples found on VMRay database, but will be resubmitted" % len(resubmit_samples))
+
+    # Combine download_samples array and resubmit_samples array for submission
+    download_samples.extend(resubmit_samples)
+
+    if len(download_samples) > 0:
+        log.info("%d samples need to be downloaded and submitted" % len(download_samples))
 
     # Retrieving watchlists from CarbonBlack
     watchlists = cb.get_watchlists()
@@ -95,12 +130,20 @@ def run():
         if file["is_truncated"]:
             sample = vmray.get_sample(file["truncated_sha256"])
             if sample is not None:
-                log.info(
-                    "Truncated file %s found on VMRay database. Not need to submit again." % file["truncated_sha256"])
-                found_samples.append(
-                    {"sha256": file["sha256"], "truncated_sha256": file["truncated_sha256"], "is_truncated": True,
-                     "sample": sample})
-                file["is_processed"] = True
+                sample_metadata = vmray.parse_sample_data(sample)
+
+                if VMRayConfig.RESUBMIT and sample_metadata["sample_verdict"] in VMRayConfig.RESUBMISSION_VERDICTS:
+                    log.debug(
+                        "Truncated file %s found on VMRay database, but will be resubmitted." %
+                        file["truncated_sha256"])
+                else:
+                    log.debug(
+                        "Truncated file %s found on VMRay database. No need to submit again." %
+                        file["truncated_sha256"])
+                    found_samples.append(
+                        {"sha256": file["sha256"], "truncated_sha256": file["truncated_sha256"], "is_truncated": True,
+                         "sample": sample})
+                    file["is_processed"] = True
 
     # Extracting reports and IOC values from VMRay for found samples
     for sample in found_samples:
@@ -114,7 +157,7 @@ def run():
             ioc_data["sha256"].add(sample_data["sample_sha256hash"])
 
             if sample["is_truncated"]:
-                ioc_data["sha256"].append(sample["sha256"])
+                ioc_data["sha256"].add(sample["sha256"])
 
             # Creating CarbonBlack IOCV2 objects for IOC values
             iocv2_objects = cb.create_iocv2_objects(ioc_data, sample_data, old_iocs)
