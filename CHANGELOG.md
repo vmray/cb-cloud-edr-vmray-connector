@@ -1,9 +1,15 @@
 # Changelog
 
-## [1.2 - Next Release]
+## [1.2 - 16.09.2022]
 ### Added
-- VMWare Carbon Black Cloud Enterprise EDR Alert enrichment
-- VMRay Analyzer submission enrichment
+- Resubmission configuration to resubmit a known file based on the verdict
+- Data source configuration to select evidence data source on Carbon Black
+- General exception block for handling error on api version changes
+- Detailed debug logging
+
+## Fixed
+- Syntax error on processing truncated samples
+- Api version change error on calculating VTI score 
 
 ## [1.1] - 03.20.2022
 ### Added

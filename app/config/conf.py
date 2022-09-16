@@ -27,6 +27,13 @@ class DEVICE_OS:
     MAC = "MAC"
 
 
+# Carbon Black data sources
+class DATA_SOURCE:
+    PROCESS = "PROCESS"
+    ENRICHED_EVENTS = "ENRICHED_EVENTS"
+    ALERTS = "ALERTS"
+
+
 # VMRay API Key types enum
 class VMRAY_API_KEY_TYPE:
     REPORT = 0
@@ -37,6 +44,7 @@ class VMRAY_API_KEY_TYPE:
 class VERDICT:
     SUSPICIOUS = "suspicious"
     MALICIOUS = "malicious"
+    CLEAN = "clean"
 
 
 # VMRay analyzer modes
@@ -114,6 +122,12 @@ class VMRayConfig:
     # If you want to run dinamic analysis for these samples change value accordingly
     TRUNCATED_FILE_ANALYZER_MODE = ANALYZER_MODE.REPUTATION_STATIC
 
+    # Resubmission status which has been already analyzed by VMRay
+    RESUBMIT = False
+
+    # Selected verdicts to resubmit evidences
+    RESUBMISSION_VERDICTS = [VERDICT.MALICIOUS, VERDICT.SUSPICIOUS]
+
 
 # CarbonBlack Configuration
 class CarbonBlackConfig:
@@ -173,6 +187,9 @@ class CarbonBlackConfig:
 
     # Selected verdicts to quarantine devices automatically
     QUARANTINE_VERDICTS = [VERDICT.MALICIOUS]
+
+    # Selected data sources to retrieve evidence hashes
+    SELECTED_DATA_SOURCES = [DATA_SOURCE.PROCESS, DATA_SOURCE.ENRICHED_EVENTS, DATA_SOURCE.ALERTS]
 
 
 # General Configuration
