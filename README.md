@@ -1,6 +1,6 @@
 # VMWare Carbon Black Cloud Connector for VMRay Analyzer 
 
-**Latest Version:** 1.1 - **Release Date:** 03/20/2022
+**Latest Version:** 1.2 - **Release Date:** 16/09/2022
 
 ## Overview
 
