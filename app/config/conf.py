@@ -97,7 +97,7 @@ class VMRayConfig:
 
     # User Agent string for VMRay Api requests
     # Defined for further use
-    USER_AGENT = "VMRayAnalyzer/CarbonBlackCloudConnector-1.0"
+    CONNECTOR_NAME = "CarbonBlackCloudConnector-1.2"
 
     # SSL Verification setting for self-signed certificates
     SSL_VERIFY = True
