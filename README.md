@@ -4,7 +4,18 @@
 
 ## Overview
 
-This project is an integration between VMWare Carbon Black Cloud Enterprise EDR and VMRay Analyzer. Connector will collect unique SHA256 hash values of processes and query or submit these samples into VMRay Sandbox. After the submission it retrieve IOC values from VMRay and creates Reports in VMware Carbon Black Cloud Enterprise EDR Watchlist.
+This project is an integration between VMWare Carbon Black Cloud Enterprise EDR and VMRay. It Allows to enrich already created incidents as well as to build an extra line of defense to detect zero-day threats. Depending on configuration, the Connector collects unique SHA256 hash values of processes from:
+- Alerts
+- Enriched Events
+- Processes run on endpoinds protected by CB Cloud Enterprise
+
+and then downloads and submits respective samples into the VMRay Analyzer for detonation and deep dynamic analysis. After the submission it retrieves the verdict and IOC values from VMRay and creates Reports in VMware Carbon Black Cloud Enterprise EDR Watchlist. 
+
+## Related VMRay Products
+The connector supports following VMRay products:
+
+Final Verdict
+Total Insight
 
 ## Project Structure
 
@@ -32,10 +43,6 @@ This project is an integration between VMWare Carbon Black Cloud Enterprise EDR 
 - VMware Carbon Black Cloud Enterprise EDR
 - VMRay Analyzer
 - Docker (optional)
-
-## License
-
-## Support
 
 ## Installation
 
